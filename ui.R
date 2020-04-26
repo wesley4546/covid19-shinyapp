@@ -1,25 +1,20 @@
 library(shiny)
+library(shinyWidgets)
 
 #Sources data file
 source("R/covid_source_file.R", local = TRUE)
 
+# custom dropdown func --------------------------------------------------------------------
+
 ui <- fluidPage(
   # Header ------------------------------------------------------------------
-  titlePanel("COVID-19 | Deaths Over Time in the U.S."),
+  titlePanel("COVID-19 Deaths Over Time in the U.S."),
   
   # Body --------------------------------------------------------------------
-  h3("Overview"),
-  p("
-    This is a ShinyApp that is made to interact with the COVID-19's deaths per 100,000 people in the U.S by state colored by results
-    of the 2016 Presidential Election results by popular vote.
-    "),
-  br(),
-  p("Feel free to raise an issue on Github:", a(href="https://github.com/wesley4546/covidstate",target="_blank", "https://github.com/wesley4546/covidstate")),
-  p("Or email me at wesley.gardiner4546@gmail.com with any questions/comments/concerns"),
-  
-  
-  
-  
+  h5("Overview"),
+  p("\nTHIS CAN BE MORE CLEAR DUDE!!.\n"),
+  #br(),
+
   hr(),
   # sidebarLayout ----------------------------------------------------------
   h4("Control Panel"),
@@ -29,50 +24,73 @@ ui <- fluidPage(
       
       # Filter by section -------------------------------------------------------
       
-      p("Filter by"),
-      # Creates checkboxes for state filter
-      checkboxGroupInput(
-        inputId = "state_filter",
-        label ="State",
-        choices = unique(state_longer_elections$state),
-        selected = c("Florida", "New York"),
-        inline = TRUE
+      #p("Filter by"),
+      
+      #move this to top, so menu can be updated if someone chooses filter
+      p(strong("Filter Options")),
+
+      checkboxInput(inputId = "label_button",
+                    label = "Put the State Labels",
+                    value = FALSE
+      ),
+      checkboxInput(inputId = "facet_button",
+                    label = "Split Panels by Political Party",
+                    value = FALSE
+      ),
+      actionButton(inputId = "all_democrat_button", "Blue states only"),
+      actionButton(inputId = "all_republican_button", "Red states only"),
+      actionButton(inputId = "reset_button", "Reset all filters"),
+      
+      hr(),
+      
+      #drop down menu
+      pickerInput(
+        inputId = "state_filter", 
+        label = "(De)Select U.S. State/s", 
+        choices = unique(state_longer_elections$state), 
+        options = list(
+          `actions-box` = TRUE, 
+          size = 10,
+          `selected-text-format` = "count > 3"
+        ), 
+        multiple = TRUE
       ),
       
+      ####
       
       # Options section ---------------------------------------------------------
       
-      hr("Options"),
+      #hr("Options"),
       # creates checkbox for labels of states
-      checkboxInput(inputId = "label_button",
-                    label = "Label States",
-                    value = TRUE
-      ),
-      checkboxInput(inputId = "facet_button",
-                    label = "Facet by Party",
-                    value = FALSE
-      ),
+      # checkboxInput(inputId = "label_button",
+      #               label = "Put the State Labels",
+      #               value = TRUE
+      # ),
+      # checkboxInput(inputId = "facet_button",
+      #               label = "Split Panels by Political Party",
+      #               value = FALSE
+      # ),
       # sidebarPanel Buttons -----------------------------------------------------------------
       
-      # reset_button
-      actionButton(inputId = "reset_button", "Reset Filter"),
-      
       # all_democrat_button
-      actionButton(inputId = "all_democrat_button", "Select All Democrat"),
+      #actionButton(inputId = "all_democrat_button", "Select All Democrat States"),
       
       # all_republican_button
-      actionButton(inputId = "all_republican_button", "Select All Republican"),
+      #actionButton(inputId = "all_republican_button", "Select All Republican States"),
       
       # all_state_button
-      actionButton(inputId = "all_state_button", "Select All"),
+      #actionButton(inputId = "all_state_button", "Select All States"),
       
+      # reset_button
+      # actionButton(inputId = "reset_button", "Reset Filter"),
       
       # Download Section --------------------------------------------------------
       hr(),
+      p(strong("Data Status")),
+      h5(paste("Updated:", format(Sys.time(), "%A %B %d, %Y"))),
       #Download button for data
       downloadButton("downloadData", "Download Full Dataset (.csv)"),
       #updated text
-      h5(paste("Updated:", format(Sys.time(), "%A %B %d, %Y"))),
       
     ), #End of sidebarPanel
     
@@ -90,9 +108,10 @@ ui <- fluidPage(
   
   # Reference Section --------------------------------------------------------  
   hr(),
-  h4("Where I got my data"),
-  p("COVID-19 Data:", a(href="https://github.com/CSSEGISandData/COVID-19",target="_blank","https://github.com/CSSEGISandData/COVID-19")),
-  
-  p("State Population Data:", a(href="https://worldpopulationreview.com/states/",target="_blank","https://worldpopulationreview.com/states/")),
-  
+  h4("Data Source"),
+  p("COVID-19 Data:", a(href="https://github.com/CSSEGISandData/COVID-19",target="_blank","CSSEGISandData")),
+  p("State Population Data:", a(href="https://worldpopulationreview.com/states/",target="_blank","World Population Review")),
+  h6("For questions, raise an issue on our GitHub repo- ", a(href="https://github.com/Big-Data-Analytics-Lab-USF/covid19-shinyapp", target="_blank", "SAIL")),
+  h6("otherwise, please email the maintainer: "),
+  h6("(1) wesley.gardiner4546@gmail.com")
 )

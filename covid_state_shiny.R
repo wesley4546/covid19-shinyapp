@@ -1,5 +1,6 @@
 library(shiny)
 library(ggplot2)
+library(patchwork)
 
 source(here::here("R","covid_source_file.R"))
 

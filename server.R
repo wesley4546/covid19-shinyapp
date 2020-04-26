@@ -34,7 +34,7 @@ server <- function(input, output, session) {
   
   
   # Button Actions -----------------------------------------------------------------
-  
+
   # reset_button action
   observeEvent(input$reset_button, {
     updateCheckboxGroupInput(session, "state_filter", selected = c("Florida", "New York"))
@@ -99,7 +99,10 @@ server <- function(input, output, session) {
           group = state, 
         ), 
         xlim = c((max(toplabels()$daycount) + 2.5), (max(toplabels()$daycount) + 2.5)), #This offsets the labels
-        show.legend = FALSE)
+        show.legend = FALSE,
+        ### CHANGES FROM HERE ON ####
+        na.rm = TRUE,
+        )
     }
     # facet_button logical expression
     if(input$facet_button == TRUE){
@@ -111,7 +114,7 @@ server <- function(input, output, session) {
     gt <- ggplotGrob(p)
     gt$layout$clip[gt$layout$name == "panel"] <- "off"
     grid.draw(gt)
-    
+
     
     #downloadData Button action
     output$downloadData <- downloadHandler(
@@ -120,14 +123,15 @@ server <- function(input, output, session) {
         write.csv(main_data(), file, row.names = FALSE)
       }
     )
-    
+
     output$summary <- renderPrint({
       summary(filterdata())
       })
-    
+
     output$table <- renderTable({
       filterdata()
     })
 
-  }, height = 700, width = 1000)
+    
+  }, height = 800, width = 1000)
 }
